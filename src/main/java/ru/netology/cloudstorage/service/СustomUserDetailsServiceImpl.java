@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class СustomUserDetailsService implements UserDetailsService {
+public class СustomUserDetailsServiceImpl implements UserDetailsService {
     private final UserCredentialsRepository userCredentialsRepository;
 
     @Override
