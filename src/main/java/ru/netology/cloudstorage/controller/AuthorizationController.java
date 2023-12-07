@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.netology.cloudstorage.configuration.AuthenticationServiceProvider;
 import ru.netology.cloudstorage.dto.LoginCredentials;
+import ru.netology.cloudstorage.dto.LoginResponseDTO;
 import ru.netology.cloudstorage.security.TokenStore;
 import ru.netology.cloudstorage.service.AuthService;
 
@@ -34,7 +35,7 @@ public class AuthorizationController {
         String token = authService.login(credentials.getUsername(),
                 credentials.getPassword());
         if (!token.isEmpty()) {
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(new LoginResponseDTO(token));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
