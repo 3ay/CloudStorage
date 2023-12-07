@@ -1,4 +1,4 @@
-package ru.netology.cloudstorage.service;
+package ru.netology.cloudstorage.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
