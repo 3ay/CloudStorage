@@ -36,7 +36,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (header == null || !header.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\":\"No JWT token found in request headers\",\"id\":400}");
+            response.getWriter().write("{\"message\":\"No JWT token found in request headers\",\"id\":401}");
             return;
         }
         String token = header.split(" ")[1].trim();
@@ -48,7 +48,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String username = claims.getSubject();
             if (username != null && tokenStore.containsToken(username, token)) {
                 @SuppressWarnings("unchecked")
-                List<String> authorities = claims.get("authorities", List.class);
+                List<String> authorities = claims.get("roles", List.class);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         username, null,
                         authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())

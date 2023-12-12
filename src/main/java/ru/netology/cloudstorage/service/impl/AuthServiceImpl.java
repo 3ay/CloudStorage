@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.netology.cloudstorage.security.TokenStore;
 import ru.netology.cloudstorage.service.AuthService;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +32,13 @@ public class AuthServiceImpl implements AuthService {
                 username, password
         ));
         if (authentication.isAuthenticated()) {
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            List<String> roles = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
             token = Jwts.builder()
                     .setSubject(username)
+                    .claim("roles", roles)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + 900000))
                     .signWith(SignatureAlgorithm.HS256, jwtSecuritySecret)
