@@ -1,16 +1,16 @@
 package ru.netology.cloudstorage.service.impl;
 
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 import io.minio.errors.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.netology.cloudstorage.exception.ErrorDeleteFile;
+import ru.netology.cloudstorage.exception.ErrorDownloadFile;
 import ru.netology.cloudstorage.exception.ErrorInputData;
 import ru.netology.cloudstorage.service.StoreService;
 
@@ -26,8 +26,14 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     private MinioClient minioClient;
     private static final Logger log = LoggerFactory.getLogger(StoreServiceImpl.class);
+
     @Override
     public void uploadFile(String filename, MultipartFile file) {
+        if (filename == null || filename.isEmpty() || filename.equals(" ")) {
+            throw new ErrorInputData("Filename is null or empty");
+        } else if (file.isEmpty()) {
+            throw new ErrorInputData("File is empty");
+        }
         log.info("start to upload");
         try {
             if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
@@ -49,4 +55,40 @@ public class StoreServiceImpl implements StoreService {
         }
 
     }
+
+    @Override
+    public void deleteFile(String filename) {
+        if (filename == null || filename.isEmpty() || filename.equals(" ")) {
+            throw new ErrorInputData("Filename is null or empty");
+        }
+        try {
+            log.info("Deleting file: {}", filename);
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(filename)
+                            .build()
+            );
+        } catch (Exception ex) {
+            throw new ErrorDeleteFile(ex.getMessage());
+        }
+    }
+
+    @Override
+    public InputStreamResource downloadFile(String filename) {
+        if (filename == null || filename.isEmpty() || filename.equals(" ")) {
+            throw new ErrorInputData("Filename is null or empty");
+        }
+        try {
+            return new InputStreamResource(minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(filename)
+                            .build()
+            ));
+        } catch (MinioException | NoSuchAlgorithmException | InvalidKeyException | IOException e) {
+            throw new ErrorDownloadFile(e.getMessage());
+        }
+    }
+
 }

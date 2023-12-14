@@ -6,6 +6,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.netology.cloudstorage.dto.ExceptionDTO;
+import ru.netology.cloudstorage.exception.ErrorDeleteFile;
+import ru.netology.cloudstorage.exception.ErrorDownloadFile;
 import ru.netology.cloudstorage.exception.ErrorInputData;
 
 @RestControllerAdvice
@@ -21,5 +23,19 @@ public class ExceptionHandlerAdvice {
         String errorMessage = String.format("%s %s", "Error input data: ", ex.getMessage());
         ExceptionDTO errorResponse = new ExceptionDTO(errorMessage, 400);
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(400));
+    }
+    @ExceptionHandler(ErrorDeleteFile.class)
+    public ResponseEntity<ExceptionDTO> handleInputData(ErrorDeleteFile ex)
+    {
+        String errorMessage = String.format("%s %s", "Error delete file: ", ex.getMessage());
+        ExceptionDTO errorResponse = new ExceptionDTO(errorMessage, 500);
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(500));
+    }
+    @ExceptionHandler(ErrorDownloadFile.class)
+    public ResponseEntity<ExceptionDTO> handleInputData(ErrorDownloadFile ex)
+    {
+        String errorMessage = String.format("%s %s", "Error download file: ", ex.getMessage());
+        ExceptionDTO errorResponse = new ExceptionDTO(errorMessage, 500);
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(500));
     }
 }

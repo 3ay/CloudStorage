@@ -4,11 +4,11 @@ import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.exception.ErrorInputData;
 import ru.netology.cloudstorage.service.StoreService;
@@ -24,20 +24,33 @@ import java.security.NoSuchAlgorithmException;
 public class UploadFileController {
     private final StoreService storeService;
     private static final Logger log = LoggerFactory.getLogger(UploadFileController.class);
+
     @PostMapping("/file")
     public ResponseEntity<String> uploadFile(@RequestParam(value = "filename") String fileName, @RequestParam("file") MultipartFile file) {
         log.info("uploadFile method called with filename: {}", fileName);
-        try {
-
-            System.out.println("before upload");
-            storeService.uploadFile(fileName, file);
-            System.out.println("after upload");
-            return ResponseEntity.ok("Success upload");
-        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
-                 NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
-                 InternalException e) {
-            throw new ErrorInputData(e.getMessage());
-        }
+        System.out.println("before upload");
+        storeService.uploadFile(fileName, file);
+        System.out.println("after upload");
+        return ResponseEntity.ok("Success upload");
     }
 
+    @DeleteMapping("/file")
+    public ResponseEntity<String> deleteFile(@RequestParam(value = "filename") String fileName) {
+        log.info("deleteFile method called with filename: {}", fileName);
+        storeService.deleteFile(fileName);
+        return ResponseEntity.ok("Success deleted");
+    }
+    @GetMapping("/file")
+    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam(value = "filename") String fileName) {
+        log.info("downloadFile method called with filename: {}", fileName);
+        InputStreamResource resource = storeService.downloadFile(fileName);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+    }
 }
