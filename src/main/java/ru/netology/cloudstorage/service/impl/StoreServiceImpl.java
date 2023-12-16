@@ -2,6 +2,7 @@ package ru.netology.cloudstorage.service.impl;
 
 import io.minio.*;
 import io.minio.errors.*;
+import io.minio.messages.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloudstorage.exception.ErrorDeleteFile;
-import ru.netology.cloudstorage.exception.ErrorDownloadFile;
-import ru.netology.cloudstorage.exception.ErrorInputData;
+import ru.netology.cloudstorage.dto.FileItemDTO;
+import ru.netology.cloudstorage.exception.*;
 import ru.netology.cloudstorage.service.StoreService;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class StoreServiceImpl implements StoreService {
@@ -91,4 +93,53 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
+    @Override
+    public void editFileName(String oldFileName, String newFileName) {
+        if (oldFileName == null || oldFileName.isEmpty() || oldFileName.equals(" ")
+                || newFileName == null || newFileName.isEmpty() || newFileName.equals(" ")) {
+            throw new ErrorInputData("oldFileName/newFileName is null or empty");
+        }
+        try {
+            log.info("Renaming file from: {} to: {}", oldFileName, newFileName);
+            minioClient.copyObject(
+                    CopyObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(newFileName)
+                            .source(CopySource.builder()
+                                    .bucket(bucketName)
+                                    .object(oldFileName)
+                                    .build())
+                            .build());
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(oldFileName)
+                            .build());
+        } catch (Exception e) {
+            throw new ErrorEditFile("Failed to rename file: " + e.getMessage());
+        }
+    }
+
+    public List<FileItemDTO> listFiles(Integer limit) {
+        if (limit == null || limit < 0) {
+            throw new ErrorInputData("limit is null or less than 0");
+        }
+        try {
+            log.info("Listing files with limit: {}", limit);
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .maxKeys(limit)
+                            .build());
+
+            List<FileItemDTO> fileList = new ArrayList<>();
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                fileList.add(new FileItemDTO(item.objectName(), item.size()));
+            }
+            return fileList;
+        } catch (Exception e) {
+            throw new ErrorGetAllFiles("Failed to list files: " + e.getMessage());
+        }
+    }
 }
