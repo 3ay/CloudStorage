@@ -120,6 +120,7 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
+    @Override
     public List<FileItemDTO> listFiles(Integer limit) {
         if (limit == null || limit < 0) {
             throw new ErrorInputData("limit is null or less than 0");

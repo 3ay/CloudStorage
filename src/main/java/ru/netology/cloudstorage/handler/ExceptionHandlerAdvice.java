@@ -25,14 +25,14 @@ public class ExceptionHandlerAdvice {
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(400));
     }
     @ExceptionHandler(ErrorDeleteFile.class)
-    public ResponseEntity<ExceptionDTO> handleInputData(ErrorDeleteFile ex)
+    public ResponseEntity<ExceptionDTO> handleDeleteFileData(ErrorDeleteFile ex)
     {
         String errorMessage = String.format("%s %s", "Error delete file: ", ex.getMessage());
         ExceptionDTO errorResponse = new ExceptionDTO(errorMessage, 500);
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(500));
     }
     @ExceptionHandler(ErrorDownloadFile.class)
-    public ResponseEntity<ExceptionDTO> handleInputData(ErrorDownloadFile ex)
+    public ResponseEntity<ExceptionDTO> handleDownloadFileData(ErrorDownloadFile ex)
     {
         String errorMessage = String.format("%s %s", "Error download file: ", ex.getMessage());
         ExceptionDTO errorResponse = new ExceptionDTO(errorMessage, 500);
