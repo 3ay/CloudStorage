@@ -1,4 +1,4 @@
-package methods;
+package ru.netology.cloudstorage.methods;
 
 import io.minio.BucketExistsArgs;
 import io.minio.ListObjectsArgs;
@@ -33,6 +33,7 @@ public class GetAllFilesTest {
     private StoreServiceImpl storeService;
     private final String bucketName = "store-bucket";
     private final String testFilename = "test.txt";
+
     @BeforeEach
     public void setup() throws Exception {
         ReflectionTestUtils.setField(storeService, "bucketName", bucketName);
@@ -44,8 +45,6 @@ public class GetAllFilesTest {
                 new ByteArrayInputStream("test content".getBytes())
         );
         storeService.uploadFile(testFilename, testFile);
-
-        // Мокирование ответов для метода listObjects
         Item item1 = mock(Item.class);
         lenient().when(item1.objectName()).thenReturn(testFilename);
         lenient().when(item1.size()).thenReturn(1234L);
@@ -56,8 +55,9 @@ public class GetAllFilesTest {
         Iterable<Result<Item>> results = List.of(result1);
         lenient().when(minioClient.listObjects(any(ListObjectsArgs.class))).thenReturn(results);
     }
+
     @Test
-    public void testListFiles(){
+    public void testListFiles() {
         List<FileItemDTO> files = storeService.listFiles(1);
         assertNotNull(files);
         assertEquals(1, files.size());

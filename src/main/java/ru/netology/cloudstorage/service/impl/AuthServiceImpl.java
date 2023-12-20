@@ -9,8 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
-import ru.netology.cloudstorage.security.TokenStore;
 import ru.netology.cloudstorage.service.AuthService;
+import ru.netology.cloudstorage.security.TokenStore;
 
 import java.util.Collection;
 import java.util.Date;

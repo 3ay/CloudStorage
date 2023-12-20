@@ -1,4 +1,4 @@
-package methods;
+package ru.netology.cloudstorage.methods;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;

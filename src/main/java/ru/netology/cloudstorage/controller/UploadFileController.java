@@ -1,6 +1,5 @@
 package ru.netology.cloudstorage.controller;
 
-import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.dto.FileItemDTO;
-import ru.netology.cloudstorage.exception.ErrorInputData;
 import ru.netology.cloudstorage.service.StoreService;
-import ru.netology.cloudstorage.service.impl.StoreServiceImpl;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController

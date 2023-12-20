@@ -1,4 +1,4 @@
-package methods;
+package ru.netology.cloudstorage.methods;
 
 import io.minio.MinioClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,8 +44,6 @@ public class DeleteFileTest {
     @Test
     void testDeleteFile() throws ErrorDeleteFile {
         storeService.deleteFile(testFilename);
-
-        // Проверка, что MinioClient.removeObject был вызван с правильными аргументами
         try {
             verify(minioClient).removeObject(
                     argThat(args -> args.bucket().equals(bucketName) && args.object().equals(testFilename))
@@ -58,8 +56,6 @@ public class DeleteFileTest {
     @Test
     void testDeleteFileWithEmptyFilename() {
         String testFilename = "";
-
-        // Проверка выброса исключения при пустом имени файла
         assertThrows(ErrorInputData.class, () -> storeService.deleteFile(testFilename));
     }
 }
