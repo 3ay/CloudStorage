@@ -1,16 +1,20 @@
 version: '3.8'
 services:
-#  app:
-#    build: .
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      - minio
-#    environment:
-#      - MINIO_URL=http://minio:9000
-#      - MINIO_ACCESS_KEY=miniokey
-#      - MINIO_SECRET_KEY=minio123secret
-#      - MINIO_BUCKET_NAME=store-bucket
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql/data
+    networks:
+      - network
+    restart: unless-stopped
 
   minio:
     image: minio/minio
@@ -23,6 +27,23 @@ services:
       MINIO_ROOT_USER: miniokey
       MINIO_ROOT_PASSWORD: minio123secret
     command: server /data --console-address ":9001"
+    networks:
+      - network
+    restart: unless-stopped
 
-volumes:
-  minio_data:
+  backend:
+    container_name: cloud-storage_app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "7070:7070"
+    networks:
+      - network
+    depends_on:
+      - postgres
+      - minio
+    restart: unless-stopped
+networks:
+  network:
+    driver: bridge
