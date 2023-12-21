@@ -1,4 +1,4 @@
 FROM openjdk:17-jdk-slim
-ADD target/CloudStorage-0.0.1-SNAPSHOT.jar /cloud-storage_app.jar
+ADD target ./target
 EXPOSE 7070
-ENTRYPOINT ["java","-jar","/cloud-storage_app.jar"]
+ENTRYPOINT ["java","-jar","target/CloudStorage-0.0.1-SNAPSHOT.jar"]
