@@ -2,7 +2,6 @@ package ru.netology.cloudstorage.methods;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
-import io.minio.BucketExistsArgs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,8 @@ import ru.netology.cloudstorage.exception.ErrorInputData;
 import ru.netology.cloudstorage.service.impl.StoreServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class UploadFileTest {

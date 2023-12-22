@@ -1,6 +1,5 @@
 package ru.netology.cloudstorage.methods;
 
-import io.minio.BucketExistsArgs;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
 import io.minio.Result;
@@ -11,18 +10,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.netology.cloudstorage.dto.FileItemDTO;
 import ru.netology.cloudstorage.exception.ErrorInputData;
 import ru.netology.cloudstorage.service.impl.StoreServiceImpl;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class GetAllFilesTest {

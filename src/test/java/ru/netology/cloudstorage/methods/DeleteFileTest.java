@@ -3,7 +3,6 @@ package ru.netology.cloudstorage.methods;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
 import io.minio.Result;
-import io.minio.errors.*;
 import io.minio.messages.Item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,17 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.netology.cloudstorage.exception.ErrorDeleteFile;
 import ru.netology.cloudstorage.exception.ErrorInputData;
-import ru.netology.cloudstorage.service.StoreService;
 import ru.netology.cloudstorage.service.impl.StoreServiceImpl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

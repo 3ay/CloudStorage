@@ -3,10 +3,12 @@ package ru.netology.cloudstorage.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.*;
-import ru.netology.cloudstorage.dto.LoginResponseDTO;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.netology.cloudstorage.dto.LoginCredentials;
+import ru.netology.cloudstorage.dto.LoginResponseDTO;
 import ru.netology.cloudstorage.service.AuthService;
 
 import javax.servlet.http.HttpServletRequest;
