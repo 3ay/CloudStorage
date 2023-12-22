@@ -68,7 +68,7 @@ public class AppContainersTest {
     void testUploadFileError() throws Exception {
         String filename = " ";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", getAuthToken());
+        headers.add("auth-token", getAuthToken());
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt", "text/plain", new byte[0]);
         mockMvc.perform(MockMvcRequestBuilders.multipart("/cloud/file")
                         .file(mockMultipartFile)
@@ -81,9 +81,9 @@ public class AppContainersTest {
 
     @Test
     void testDeleteFileError() throws Exception {
-        String filename = "lecture";
+        String filename = "delete_error_file";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", getAuthToken());
+        headers.add("auth-token", getAuthToken());
         mockMvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_FILE + "?filename=" + filename)
                         .contentType(MediaType.APPLICATION_JSON)
                         .headers(headers))
@@ -94,12 +94,12 @@ public class AppContainersTest {
     public void testDownloadFileError() throws Exception {
         String filename = "nonexistent-file.txt";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", getAuthToken());
+        headers.add("auth-token", getAuthToken());
         mockMvc.perform(MockMvcRequestBuilders.get("/cloud/file")
                         .param("filename", filename)
                         .headers(headers))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(containsString("Error download file:  The specified bucket does not exist")));
+                .andExpect(jsonPath("$.message").value(containsString("Error download file:  The specified key does not exist.")));
     }
 }

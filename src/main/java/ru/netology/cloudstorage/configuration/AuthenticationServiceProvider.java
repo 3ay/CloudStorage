@@ -17,13 +17,13 @@ public class AuthenticationServiceProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-      String username = authentication.getName();
+      String login = authentication.getName();
       String password = authentication.getCredentials().toString();
-      UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+      UserDetails userDetails = userDetailsService.loadUserByUsername(login);
         if (userDetails != null && password.equals(userDetails.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
+            return new UsernamePasswordAuthenticationToken(login, password, userDetails.getAuthorities());
         }
-        throw new BadCredentialsException("Invalid username or password");
+        throw new BadCredentialsException("Invalid login or password");
     }
 
     public boolean supports(Class<?> authentication) {

@@ -26,10 +26,10 @@ public class AuthServiceImpl implements AuthService {
     private final TokenStore tokenStore;
 
     @Override
-    public String login(String username, String password) {
+    public String login(String login, String password) {
         String token = "";
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                username, password
+                login, password
         ));
         if (authentication.isAuthenticated()) {
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -37,13 +37,13 @@ public class AuthServiceImpl implements AuthService {
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
             token = Jwts.builder()
-                    .setSubject(username)
+                    .setSubject(login)
                     .claim("roles", roles)
                     .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 900000))
+                    .setExpiration(new Date(System.currentTimeMillis() + 9000000))
                     .signWith(SignatureAlgorithm.HS256, jwtSecuritySecret)
                     .compact();
-            tokenStore.storeToken(username, token);
+            tokenStore.storeToken(login, token);
         }
         return token;
     }

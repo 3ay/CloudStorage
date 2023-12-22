@@ -47,14 +47,14 @@ public class AuthorizationMethodsTest {
 
     @Test
     public void testLoginUser() throws Exception {
-        String username = "user1";
+        String login = "user1";
         String password = "password1";
         String fakeToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBsb2NhbGhvc3QiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImVudGVyVGltZSI6MTcwMjQ1MzMwNzg0NiwiaWF0IjoxNzAyNDUzMzA3LCJleHAiOjE3MDI0NTY5MDd9.E8Qi-zKmLySB3bLNSuoI0dkoQ_AWm707wtYIehdX9Z0";
-        when(authService.login(username, password)).thenReturn(fakeToken);
+        when(authService.login(login, password)).thenReturn(fakeToken);
         LoginCredentials loginCredentials = new LoginCredentials();
-        loginCredentials.setUsername(username);
+        loginCredentials.setLogin(login);
         loginCredentials.setPassword(password);
-        Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication auth = new UsernamePasswordAuthenticationToken(login, password);
         when(authenticationManager.authenticate(any(Authentication.class))).thenReturn(auth);
         mockMvc.perform(post("/cloud/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,17 +65,17 @@ public class AuthorizationMethodsTest {
     }
     @Test
     public void testLoginWithInvalidCredentials() throws Exception {
-        String username = "user1";
+        String login = "user1";
         String password = "wrongPassword";
         String fakeToken = "";
 
-        when(authService.login(username, password)).thenReturn(fakeToken);
+        when(authService.login(login, password)).thenReturn(fakeToken);
         LoginCredentials loginCredentials = new LoginCredentials();
-        loginCredentials.setUsername(username);
+        loginCredentials.setLogin(login);
         loginCredentials.setPassword(password);
 
         when(authenticationManager.authenticate(any(Authentication.class)))
-                .thenThrow(new BadCredentialsException("Invalid username or password"));
+                .thenThrow(new BadCredentialsException("Invalid login or password"));
 
         mockMvc.perform(post("/cloud/login")
                         .contentType(MediaType.APPLICATION_JSON)

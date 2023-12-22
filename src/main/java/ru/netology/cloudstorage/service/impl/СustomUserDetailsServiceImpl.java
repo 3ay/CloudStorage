@@ -22,14 +22,14 @@ public class СustomUserDetailsServiceImpl implements UserDetailsService {
     private final UserCredentialsRepository userCredentialsRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserDetailsDAO> optionalUserDetailsDAO = userCredentialsRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        Optional<UserDetailsDAO> optionalUserDetailsDAO = userCredentialsRepository.findByLogin(login);
         if (optionalUserDetailsDAO.isPresent()) {
-            return new User(optionalUserDetailsDAO.get().getUsername(),
+            return new User(optionalUserDetailsDAO.get().getLogin(),
                     optionalUserDetailsDAO.get().getPassword(),
                     getAuthorities(optionalUserDetailsDAO.get()));
         } else
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("User not found with login: " + login);
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(UserDetailsDAO user) {

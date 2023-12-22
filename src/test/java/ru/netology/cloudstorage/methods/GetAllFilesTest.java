@@ -31,21 +31,14 @@ public class GetAllFilesTest {
 
     @InjectMocks
     private StoreServiceImpl storeService;
-    private final String bucketName = "store-bucket";
-    private final String testFilename = "test.txt";
 
     @BeforeEach
     public void setup() throws Exception {
+        String bucketName = "store-bucket";
         ReflectionTestUtils.setField(storeService, "bucketName", bucketName);
-        when(minioClient.bucketExists(any(BucketExistsArgs.class))).thenReturn(true);
-        MockMultipartFile testFile = new MockMultipartFile(
-                "file",
-                testFilename,
-                "text/plain",
-                new ByteArrayInputStream("test content".getBytes())
-        );
-        storeService.uploadFile(testFilename, testFile);
+
         Item item1 = mock(Item.class);
+        String testFilename = "test.txt";
         lenient().when(item1.objectName()).thenReturn(testFilename);
         lenient().when(item1.size()).thenReturn(1234L);
 
@@ -55,6 +48,7 @@ public class GetAllFilesTest {
         Iterable<Result<Item>> results = List.of(result1);
         lenient().when(minioClient.listObjects(any(ListObjectsArgs.class))).thenReturn(results);
     }
+
 
     @Test
     public void testListFiles() {

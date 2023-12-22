@@ -4,8 +4,8 @@ services:
     container_name: postgres_container
     image: postgres
     environment:
-      POSTGRES_USER:  ${POSTGRES_USERNAME:-postgres}
-      POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
     ports:
       - "5432:5432"
@@ -50,6 +50,17 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: password
+  front:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+    networks:
+      - network
+    restart: always
 networks:
   network:
     driver: bridge

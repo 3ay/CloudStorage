@@ -36,7 +36,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         log.info("JwtTokenFilter: Processing request to '{}'", request.getRequestURI());
 
         if (!request.getRequestURI().contains("/login")) {
-            String header = request.getHeader("Authorization");
+            String header = request.getHeader("auth-token");
             log.debug("Authorization header: {}", header);
 
             if (header != null && header.startsWith("Bearer ")) {
@@ -46,16 +46,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                             .setSigningKey(jwtSecuritySecret)
                             .parseClaimsJws(token)
                             .getBody();
-                    String username = claims.getSubject();
+                    String login = claims.getSubject();
 
-                    if (username != null && tokenStore.containsToken(username, token)) {
+                    if (login != null && tokenStore.containsToken(login, token)) {
                         List<String> authorities = claims.get("roles", List.class);
                         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                                username, null,
+                                login, null,
                                 authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
                         );
                         SecurityContextHolder.getContext().setAuthentication(auth);
-                        log.debug("Authentication set for user: {}", username);
+                        log.debug("Authentication set for user: {}", login);
                     }
                 } catch (SignatureException ex) {
                     response.setContentType("application/json");

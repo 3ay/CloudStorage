@@ -15,12 +15,12 @@ public class TokenStoreImpl implements TokenStore {
     }
 
     @Override
-    public void storeToken(String username, String token) {
-        tokenStorage.put(username, token);
+    public void storeToken(String login, String token) {
+        tokenStorage.put(login, token);
     }
 
     @Override
-    public boolean containsToken(String username, String token) {
-        return token.equals(tokenStorage.get(username));
+    public boolean containsToken(String login, String token) {
+        return token.equals(tokenStorage.get(login));
     }
 }

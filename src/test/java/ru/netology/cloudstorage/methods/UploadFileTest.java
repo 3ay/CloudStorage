@@ -34,8 +34,6 @@ public class UploadFileTest {
 
     @Test
     public void testUploadFile() throws Exception {
-        when(minioClient.bucketExists(any(BucketExistsArgs.class))).thenReturn(false);
-
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 testFilename,
@@ -44,8 +42,6 @@ public class UploadFileTest {
         );
 
         storeService.uploadFile(testFilename, file);
-
-        verify(minioClient).makeBucket(any());
         verify(minioClient).putObject(any(PutObjectArgs.class));
     }
 

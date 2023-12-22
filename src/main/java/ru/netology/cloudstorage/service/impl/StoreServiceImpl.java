@@ -36,12 +36,7 @@ public class StoreServiceImpl implements StoreService {
         } else if (file.isEmpty()) {
             throw new ErrorInputData("File is empty");
         }
-        log.info("start to upload");
         try {
-            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-                System.out.println("create bucket");
-            }
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
@@ -63,6 +58,13 @@ public class StoreServiceImpl implements StoreService {
         if (filename == null || filename.isEmpty() || filename.equals(" ")) {
             throw new ErrorInputData("Filename is null or empty");
         }
+        boolean isFileExists = minioClient.listObjects(
+                ListObjectsArgs.builder().bucket(bucketName).prefix(filename).build()
+        ).iterator().hasNext();
+
+        if (!isFileExists) {
+            throw new ErrorDeleteFile("File not found in the bucket: " + filename);
+        }
         try {
             log.info("Deleting file: {}", filename);
             minioClient.removeObject(
@@ -81,6 +83,7 @@ public class StoreServiceImpl implements StoreService {
         if (filename == null || filename.isEmpty() || filename.equals(" ")) {
             throw new ErrorInputData("Filename is null or empty");
         }
+
         try {
             return new InputStreamResource(minioClient.getObject(
                     GetObjectArgs.builder()

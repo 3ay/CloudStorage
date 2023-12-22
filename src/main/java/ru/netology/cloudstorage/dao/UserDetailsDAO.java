@@ -12,7 +12,7 @@ public class UserDetailsDAO {
     @Column(name = "id")
     private Long id;
     @Column(unique = true)
-    private String username;
+    private String login;
     private String password;
     private String authorities;
 }
