@@ -12,9 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.netology.cloudstorage.dto.FileItemDTO;
+import ru.netology.cloudstorage.exception.ErrorGetFiles;
 import ru.netology.cloudstorage.exception.ErrorInputData;
 import ru.netology.cloudstorage.service.impl.StoreServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +52,17 @@ public class GetAllFilesTest {
 
     @Test
     public void testListFiles() {
-        List<FileItemDTO> files = storeService.listFiles(1);
+        List<FileItemDTO> files = new ArrayList<>();
+        Iterable<Result<Item>> items = storeService.listFiles(1);
+        for (Result<Item> itemResult : items) {
+            try {
+                Item item = itemResult.get();
+                FileItemDTO fileItemDTO = new FileItemDTO(item.objectName(), item.size());
+                files.add(fileItemDTO);
+            } catch (Exception e) {
+                throw new ErrorGetFiles("Error to get files");
+            }
+        }
         assertNotNull(files);
         assertEquals(1, files.size());
         assertEquals("test.txt", files.get(0).getFilename());

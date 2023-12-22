@@ -11,14 +11,11 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.exception.*;
-import ru.netology.cloudstorage.dto.FileItemDTO;
 import ru.netology.cloudstorage.service.StoreService;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class StoreServiceImpl implements StoreService {
@@ -44,7 +41,7 @@ public class StoreServiceImpl implements StoreService {
                             .stream(file.getInputStream(), file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build());
-            System.out.println("Success upload");
+            log.info("Success upload");
         } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException |
                  InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException |
                  XmlParserException e) {
@@ -124,7 +121,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<FileItemDTO> listFiles(Integer limit) {
+    public Iterable<Result<Item>> listFiles(Integer limit) {
         if (limit == null || limit < 0) {
             throw new ErrorInputData("limit is null or less than 0");
         }
@@ -135,15 +132,9 @@ public class StoreServiceImpl implements StoreService {
                             .bucket(bucketName)
                             .maxKeys(limit)
                             .build());
-
-            List<FileItemDTO> fileList = new ArrayList<>();
-            for (Result<Item> result : results) {
-                Item item = result.get();
-                fileList.add(new FileItemDTO(item.objectName(), item.size()));
-            }
-            return fileList;
+            return results;
         } catch (Exception e) {
-            throw new ErrorGetAllFiles("Failed to list files: " + e.getMessage());
+            throw new ErrorGetFiles("Failed to list files: " + e.getMessage());
         }
     }
 }

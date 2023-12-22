@@ -29,16 +29,6 @@ public class AuthorizationController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-//    @PostMapping("/login")
-//    public LoginResponseDTO login(@RequestBody @Valid LoginCredentials credentials) {
-//        String token = authService.login(credentials.getLogin(),
-//                credentials.getPassword());
-//        if (!token.isEmpty()) {
-//            return new LoginResponseDTO(token);
-//        } else {
-//            throw new BadCredentialsException("Invalid login or password");
-//        }
-//    }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {

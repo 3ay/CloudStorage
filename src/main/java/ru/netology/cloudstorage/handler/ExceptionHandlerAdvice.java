@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.netology.cloudstorage.dto.ExceptionDTO;
 import ru.netology.cloudstorage.exception.ErrorDeleteFile;
 import ru.netology.cloudstorage.exception.ErrorDownloadFile;
+import ru.netology.cloudstorage.exception.ErrorGetFiles;
 import ru.netology.cloudstorage.exception.ErrorInputData;
 
 @RestControllerAdvice
@@ -35,6 +36,13 @@ public class ExceptionHandlerAdvice {
     public ResponseEntity<ExceptionDTO> handleDownloadFileData(ErrorDownloadFile ex)
     {
         String errorMessage = String.format("%s %s", "Error download file: ", ex.getMessage());
+        ExceptionDTO errorResponse = new ExceptionDTO(errorMessage, 500);
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(500));
+    }
+    @ExceptionHandler(ErrorGetFiles.class)
+    public ResponseEntity<ExceptionDTO> handleGetAllFiles(ErrorGetFiles ex)
+    {
+        String errorMessage = String.format("%s %s", "Error get files: ", ex.getMessage());
         ExceptionDTO errorResponse = new ExceptionDTO(errorMessage, 500);
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(500));
     }
