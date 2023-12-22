@@ -6,4 +6,6 @@
 
 Позволяет пользователю использовать существующие функции FRONT для авторизации, загрузки и просмотра своих файлов, без необходимости каких-либо доработок в системе.
 
+### Схема дипломного проекта
+![Project schema.jpg](Project%20schema.jpg)
 [Задание для дипломного проекта](https://github.com/netology-code/jd-homeworks/blob/master/diploma/cloudservice.md)
