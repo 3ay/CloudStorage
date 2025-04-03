@@ -1,4 +1,4 @@
-FROM node:14-buster
+FROM node:16-buster
 RUN npm install -g http-server
 WORKDIR /app
 COPY package*.json ./
